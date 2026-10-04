@@ -7,4 +7,5 @@ import GDTReadingPoint.Empty
 import GDTReadingPoint.Nonempty
 import GDTReadingPoint.Period
 import GDTReadingPoint.Minimal
+import GDTReadingPoint.Count
 import GDTReadingPoint.Examples
