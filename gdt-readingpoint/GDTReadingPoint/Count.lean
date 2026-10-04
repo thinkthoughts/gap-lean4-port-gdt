@@ -423,13 +423,12 @@ theorem residuePoint_injective
   exact Nat.eq_of_mul_eq_mul_left hmpos hmul
 
 /--
-Every point in the initial window with the specified residue class
-is represented by some `residuePoint P t`.
+Every natural number in the specified residue class has the affine
+form `a mod m + m*t`.
 -/
 theorem exists_residuePoint_of_mod_eq
     (P : Params)
     {n : Nat}
-    (hnlt : n < Params.Tmin P)
     (hmod : n % P.m = P.a % P.m) :
     ∃ t, n = residuePoint P t := by
   refine ⟨n / P.m, ?_⟩
@@ -443,5 +442,51 @@ theorem exists_residuePoint_of_mod_eq
   rw [hmod] at hdecomp
 
   exact hdecomp
+
+/--
+If a residue-class point lies in the initial period `[0, Tmin)`,
+then its affine parameter satisfies `t < R`.
+-/
+theorem residuePoint_index_lt_R
+    (P : Params)
+    {n t : Nat}
+    (hnlt : n < Params.Tmin P)
+    (hn : n = residuePoint P t) :
+    t < Params.R P := by
+  subst n
+  unfold residuePoint Params.Tmin at hnlt
+
+  by_contra hnot
+
+  have hRle :
+      Params.R P ≤ t :=
+    Nat.le_of_not_gt hnot
+
+  have hmul :
+      P.m * Params.R P ≤ P.m * t :=
+    Nat.mul_le_mul_left P.m hRle
+
+  have hbase :
+      P.m * t ≤ P.a % P.m + P.m * t :=
+    Nat.le_add_left _ _
+
+  exact
+    (Nat.not_lt_of_ge (le_trans hmul hbase)) hnlt
+
+/--
+Every point in the initial period `[0, Tmin)` satisfying the
+specified residue condition is represented by a parameter `t < R`.
+-/
+theorem exists_residuePoint_lt_R
+    (P : Params)
+    {n : Nat}
+    (hnlt : n < Params.Tmin P)
+    (hmod : n % P.m = P.a % P.m) :
+    ∃ t < Params.R P, n = residuePoint P t := by
+  rcases exists_residuePoint_of_mod_eq P hmod with ⟨t, ht⟩
+
+  refine ⟨t, ?_, ht⟩
+
+  exact residuePoint_index_lt_R P hnlt ht
 
 end GDTReadingPoint
