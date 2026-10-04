@@ -170,5 +170,36 @@ theorem coprime_radN_iff
     unfold radN
     exact Nat.prod_primeFactors_dvd P.N
 
+/--
+A prime `q` in `Rset` is coprime to the complementary factor `Rrest`.
+-/
+theorem coprime_q_Rrest
+    (P : GDTReadingPoint.Params)
+    {q : Nat}
+    (hq : q ∈ Rset P) :
+    Nat.Coprime q (Rrest P q) := by
+  have hqprime : Nat.Prime q := by
+    exact Nat.prime_of_mem_primeFactors
+      (Finset.mem_sdiff.mp hq).1
+
+  unfold Rrest
+  apply hqprime.coprime_prod_iff.mpr
+  intro p hp
+
+  have hpRset : p ∈ Rset P :=
+    Finset.mem_of_mem_erase hp
+
+  have hpprime : Nat.Prime p := by
+    exact Nat.prime_of_mem_primeFactors
+      (Finset.mem_sdiff.mp hpRset).1
+
+  have hpne : p ≠ q := by
+    exact Finset.ne_of_mem_erase hp
+
+  exact hqprime.coprime_iff_not_dvd.mpr
+    (by
+      intro hdiv
+      exact hpne (hpprime.dvd_prime hqprime |>.mp hdiv))
+
 end Params
 end GDTReadingPoint
