@@ -6,6 +6,7 @@ Volkan Dağlı's `gap-lean4-port`.
 
 ## Leading specification
 <a href="gdt.pdf">gdt.pdf</a>
+
 https://antiviolence.ai/gdt.pdf
 
 ## Upstream
