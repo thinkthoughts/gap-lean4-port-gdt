@@ -145,6 +145,62 @@ theorem prime_dvd_period_of_mem_R
     rw [Nat.sub_add_cancel (Nat.le_of_lt hrlt)]
     simp
 
+  have hRrestR :
+      Params.Rrest P q ∣ Params.R P := by
+    rw [Params.R_eq_q_mul_Rrest P hq]
+    exact ⟨q, by ac_rfl⟩
+
+  have hn_Rrest :
+      Nat.ModEq (Params.Rrest P q) n.1 1 := by
+    have hn_b_Rrest :
+        Nat.ModEq (Params.Rrest P q) n.1 b.1 :=
+      hn_R.of_dvd hRrestR
+    exact hn_b_Rrest.trans hb_Rrest
+
+  have hcop_n_Rrest :
+      Nat.Coprime n.1 (Params.Rrest P q) := by
+    rw [Nat.coprime_iff_gcd_eq_one]
+    rw [hn_Rrest.gcd_eq]
+    simp
+
+  have hq_not_dvd_n : ¬ q ∣ n.1 := by
+    intro hdiv
+
+    have hnmod0 : n.1 % q = 0 :=
+      Nat.mod_eq_zero_of_dvd hdiv
+
+    have hcong :
+        n.1 % q = (q - T % q) % q := by
+      exact hn_q
+
+    have hrpos : 0 < T % q :=
+      Nat.pos_of_ne_zero hTmod_ne
+
+    have hrlt : T % q < q :=
+      Nat.mod_lt T hqprime.pos
+
+    have hdiff_pos : 0 < q - T % q :=
+      Nat.sub_pos_of_lt hrlt
+
+    have hdiff_lt : q - T % q < q :=
+      Nat.sub_lt hqprime.pos hrpos
+
+    have hdiffmod :
+        (q - T % q) % q = q - T % q :=
+      Nat.mod_eq_of_lt hdiff_lt
+
+    rw [hnmod0, hdiffmod] at hcong
+
+    exact (Nat.ne_of_gt hdiff_pos) hcong.symm
+
+  have hcop_q_n :
+      Nat.Coprime q n.1 :=
+    (hqprime.coprime_iff_not_dvd).2 hq_not_dvd_n
+
+  have hcop_n_q :
+      Nat.Coprime n.1 q :=
+    hcop_q_n.symm
+
   sorry
 
 end GDTReadingPoint
