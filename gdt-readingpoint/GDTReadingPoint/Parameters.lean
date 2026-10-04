@@ -112,5 +112,41 @@ theorem radN_dvd_Tmin (P : GDTReadingPoint.Params) :
   rw [hk]
   ac_rfl
 
+/--
+Coprimality with `N` is equivalent to coprimality with its radical support.
+
+Only the prime support of `N` matters for the GDT coprimality condition.
+-/
+theorem coprime_radN_iff
+    (P : GDTReadingPoint.Params) (n : Nat) :
+    Nat.Coprime n (radN P) ↔ Nat.Coprime n P.N := by
+  constructor
+
+  · intro hrad
+    apply Nat.coprime_of_dvd
+    intro q hqprime hqdivn
+    intro hqdivN
+
+    have hN0 : P.N ≠ 0 := Nat.ne_of_gt P.hN
+
+    have hqmemN : q ∈ Nat.primeFactors P.N := by
+      exact Nat.mem_primeFactors.mpr
+        ⟨hqprime, hqdivN, hN0⟩
+
+    have hqdivRad : q ∣ radN P := by
+      unfold radN
+      exact Finset.dvd_prod_of_mem _ hqmemN
+
+    have hqcop : Nat.Coprime q (radN P) :=
+      hrad.of_dvd_left hqdivn
+
+    exact
+      (hqprime.coprime_iff_not_dvd.mp hqcop) hqdivRad
+
+  · intro hN
+    apply hN.of_dvd_right
+    unfold radN
+    exact Nat.prod_primeFactors_dvd P.N
+
 end Params
 end GDTReadingPoint
