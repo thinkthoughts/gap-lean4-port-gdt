@@ -252,11 +252,68 @@ theorem R_dvd_period
     {T : Nat}
     (hT : IsPeriod P T) :
     Params.R P ∣ T := by
-  unfold Params.R
 
-  apply Finset.prod_dvd
-  intro q hq
+  by_cases hT0 : T = 0
+  · subst T
+    simp
 
-  exact prime_dvd_period_of_mem_R P hadm hT hq
+  have hpfR :
+      Nat.primeFactors (Params.R P) = Params.Rset P := by
+    unfold Params.R
+    apply Nat.primeFactors_prod
+    intro q hq
+    change
+      q ∈ Nat.primeFactors P.N \ Nat.primeFactors P.m
+      at hq
+    exact Nat.prime_of_mem_primeFactors
+      (Finset.mem_sdiff.mp hq).1
+
+  have hsubset :
+      Nat.primeFactors (Params.R P) ⊆ Nat.primeFactors T := by
+    rw [hpfR]
+    intro q hq
+
+    have hqprime : Nat.Prime q := by
+      exact Nat.prime_of_mem_primeFactors
+        (Finset.mem_sdiff.mp hq).1
+
+    have hqT : q ∣ T :=
+      prime_dvd_period_of_mem_R P hadm hT hq
+
+    exact Nat.mem_primeFactors.mpr
+      ⟨hqprime, hqT, hT0⟩
+
+  have hprod :
+      (∏ p ∈ Nat.primeFactors (Params.R P), p) ∣ T :=
+    (Nat.prod_primeFactors_dvd_iff hT0).2 hsubset
+
+  rw [hpfR] at hprod
+
+  simpa [Params.R] using hprod
+
+/--
+For an admissible GDT class, every period is a multiple of
+the specified period `Tmin = mR`.
+-/
+theorem Tmin_dvd_period
+    (P : Params)
+    (hadm : Admissible P.a (Params.d P))
+    {T : Nat}
+    (hT : IsPeriod P T) :
+    Params.Tmin P ∣ T := by
+
+  have hmT : P.m ∣ T :=
+    m_dvd_period P hadm hT
+
+  have hRT : Params.R P ∣ T :=
+    R_dvd_period P hadm hT
+
+  have hmR :
+      P.m * Params.R P ∣ T :=
+    (Params.coprime_m_R P).mul_dvd_of_dvd_of_dvd
+      hmT
+      hRT
+
+  simpa [Params.Tmin] using hmR
 
 end GDTReadingPoint
