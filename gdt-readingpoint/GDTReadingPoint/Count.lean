@@ -109,8 +109,9 @@ theorem goodCount_add_Tmin
 
   have hsurjective :
       ∀ y ∈ (Window P (k + T)).filter (Good P),
-        ∃ x ∈ (Window P k).filter (Good P),
-          x + T = y := by
+        ∃ x,
+          ∃ hx : x ∈ (Window P k).filter (Good P),
+            x + T = y := by
     intro y hy
     rw [Finset.mem_filter] at hy
     rcases hy with ⟨hyWindow, hyGood⟩
@@ -129,9 +130,11 @@ theorem goodCount_add_Tmin
         omega
       · have hyEq : y - T + T = y := by
           omega
+
         have hshift :
             Good P ((y - T) + Params.Tmin P) := by
           simpa [T, hyEq] using hyGood
+
         exact
           (good_shift_Tmin_iff P (y - T)).1 hshift
 
