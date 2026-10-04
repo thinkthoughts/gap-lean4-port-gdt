@@ -1,6 +1,6 @@
 import Mathlib.Data.Nat.Factorization.Basic
-import GDTReadingPoint.Basic
 import Mathlib.Data.Nat.Squarefree
+import GDTReadingPoint.Basic
 
 namespace GDTReadingPoint
 namespace Params
