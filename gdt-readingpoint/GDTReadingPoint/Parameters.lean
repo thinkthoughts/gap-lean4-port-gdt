@@ -67,7 +67,9 @@ theorem coprime_m_R (P : GDTReadingPoint.Params) :
       (Finset.mem_sdiff.mp hq).1
 
   rw [hpfR]
-  exact Finset.disjoint_sdiff_right
+  rw [Finset.disjoint_left]
+  intro q hqm hqR
+  exact (Finset.mem_sdiff.mp hqR).2 hqm
 
 end Params
 end GDTReadingPoint
