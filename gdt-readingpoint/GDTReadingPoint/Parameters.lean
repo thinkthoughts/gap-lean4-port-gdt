@@ -58,6 +58,7 @@ theorem R_eq_q_mul_Rrest
     R P = q * Rrest P q := by
   unfold R Rrest
   rw [← Finset.prod_erase_mul _ _ hq]
+  ac_rfl
 
 /--
 `m` is coprime to the complementary radical factor `R`.
