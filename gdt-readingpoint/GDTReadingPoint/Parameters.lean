@@ -85,6 +85,19 @@ theorem d_dvd_m (P : GDTReadingPoint.Params) :
     (Nat.gcd_dvd_right P.N P.m)
 
 /--
+The shared radical factor `d` also divides `N`.
+-/
+theorem d_dvd_N (P : GDTReadingPoint.Params) :
+    d P ∣ P.N := by
+  have hN0 : P.N ≠ 0 := Nat.ne_of_gt P.hN
+  have hm0 : P.m ≠ 0 := Nat.ne_of_gt P.hm
+  unfold d
+  rw [← Nat.primeFactors_gcd hN0 hm0]
+  exact dvd_trans
+    (Nat.prod_primeFactors_dvd (Nat.gcd P.N P.m))
+    (Nat.gcd_dvd_left P.N P.m)
+
+/--
 The radical of `N` divides the proposed period `Tmin = mR`.
 
 This is the structural fact that will make GDT membership invariant
