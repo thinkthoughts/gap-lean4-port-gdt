@@ -123,6 +123,28 @@ theorem prime_dvd_period_of_mem_R
       hn_R.of_dvd hqR
     exact hn_b_q.trans hb_q
 
+  have hq_dvd_nT : q ∣ n.1 + T := by
+    apply Nat.dvd_of_mod_eq_zero
+
+    change (n.1 + T) % q = 0
+    rw [Nat.add_mod]
+
+    change n.1 % q = (q - T % q) % q at hn_q
+    rw [hn_q]
+
+    have hrpos : 0 < T % q :=
+      Nat.pos_of_ne_zero hTmod_ne
+
+    have hrlt : T % q < q :=
+      Nat.mod_lt T hqprime.pos
+
+    have hdiff_lt : q - T % q < q :=
+      Nat.sub_lt hqprime.pos hrpos
+
+    rw [Nat.mod_eq_of_lt hdiff_lt]
+    rw [Nat.sub_add_cancel (Nat.le_of_lt hrlt)]
+    simp
+
   sorry
 
 end GDTReadingPoint
