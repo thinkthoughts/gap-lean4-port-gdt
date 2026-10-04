@@ -168,8 +168,7 @@ theorem goodCount_add_mul_Tmin
         goodCount P (k + (r + 1) * Params.Tmin P)
             =
           goodCount P ((k + r * Params.Tmin P) + Params.Tmin P) := by
-            congr 1
-            omega
+            simp [Nat.add_mul, Nat.add_assoc]
         _ = goodCount P (k + r * Params.Tmin P) := by
               exact goodCount_add_Tmin P (k + r * Params.Tmin P)
         _ = goodCount P k := ihr
