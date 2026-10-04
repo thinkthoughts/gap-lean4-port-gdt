@@ -1,5 +1,6 @@
 import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.Data.Nat.Squarefree
+import Mathlib.Data.Nat.GCD.BigOperators
 import GDTReadingPoint.Basic
 
 namespace GDTReadingPoint
@@ -197,13 +198,9 @@ theorem coprime_q_Rrest
   have hpne : p ≠ q :=
     Finset.ne_of_mem_erase hp
 
-  rw [hqprime.coprime_iff_not_dvd]
-
-  intro hqp
-  have hpeq : p = q := by
-    exact (Nat.dvd_prime hpprime).mp hqp |>.resolve_left hqprime.ne_one |>.symm
-
-  exact hpne hpeq
+  exact
+    (Nat.coprime_primes hqprime hpprime).2
+      (Ne.symm hpne)
 
 end Params
 end GDTReadingPoint
