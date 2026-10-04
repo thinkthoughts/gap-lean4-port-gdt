@@ -336,4 +336,21 @@ theorem goodCount_succ
 
   exact hcard.symm
 
+/--
+Every length-`Tmin` counting window has the same number of
+GDT-good reading points as the initial window.
+-/
+theorem goodCount_eq_zero
+    (P : Params)
+    (k : Nat) :
+    goodCount P k = goodCount P 0 := by
+  induction k with
+  | zero =>
+      rfl
+  | succ k ih =>
+      calc
+        goodCount P (k + 1) = goodCount P k :=
+          goodCount_succ P k
+        _ = goodCount P 0 := ih
+
 end GDTReadingPoint
