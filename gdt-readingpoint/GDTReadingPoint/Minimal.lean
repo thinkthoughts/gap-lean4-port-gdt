@@ -116,6 +116,13 @@ theorem prime_dvd_period_of_mem_R
       Nat.ModEq (Params.Rrest P q) b.1 1 :=
     b.2.2
 
+  have hn_q :
+      Nat.ModEq q n.1 (q - T % q) := by
+    have hn_b_q :
+        Nat.ModEq q n.1 b.1 :=
+      hn_R.of_dvd hqR
+    exact hn_b_q.trans hb_q
+
   sorry
 
 end GDTReadingPoint
