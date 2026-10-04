@@ -1,6 +1,6 @@
 import GDTReadingPoint.Basic
 import GDTReadingPoint.Admissible
 import GDTReadingPoint.ZmodBridge
-import GDTReadingPoint.Period
 import GDTReadingPoint.Parameters
+import GDTReadingPoint.Period
 import GDTReadingPoint.Examples
