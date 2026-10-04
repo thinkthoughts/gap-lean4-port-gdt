@@ -173,4 +173,80 @@ theorem goodCount_add_mul_Tmin
               exact goodCount_add_Tmin P (k + r * Params.Tmin P)
         _ = goodCount P k := ihr
 
+/--
+Shifting a length-`Tmin` counting window forward by one reading point
+preserves the number of GDT-good values.
+-/
+theorem goodCount_succ
+    (P : Params)
+    (k : Nat) :
+    goodCount P (k + 1) = goodCount P k := by
+  unfold goodCount
+
+  let T := Params.Tmin P
+
+  have hleft :
+      (Window P (k + 1)).filter (Good P) =
+        (((Window P k).filter (Good P)).erase k).insert (k + T) := by
+    ext n
+    simp [Window, T, good_shift_Tmin_iff]
+    omega
+
+  rw [hleft]
+
+  by_cases hk : Good P k
+
+  · have hk_mem :
+        k ∈ (Window P k).filter (Good P) := by
+      simp [Window, hk, T]
+      have hTpos : 0 < T := by
+        unfold T Params.Tmin
+        exact Nat.mul_pos P.hm (by
+          unfold Params.R
+          apply Finset.prod_pos
+          intro q hq
+          exact (Nat.prime_of_mem_primeFactors
+            (Finset.mem_sdiff.mp hq).1).pos)
+      omega
+
+    have hkT_not_mem :
+        k + T ∉ ((Window P k).filter (Good P)).erase k := by
+      intro h
+      have hmem :
+          k + T ∈ (Window P k).filter (Good P) :=
+        Finset.mem_of_mem_erase h
+      have hbounds :=
+        (mem_Window_iff P k (k + T)).1
+          (Finset.mem_filter.mp hmem).1
+      omega
+
+    rw [Finset.card_insert_of_not_mem hkT_not_mem]
+    rw [Finset.card_erase_of_mem hk_mem]
+
+  · have hk_not_mem :
+        k ∉ (Window P k).filter (Good P) := by
+      simp [hk]
+
+    have hkT_not_good : ¬ Good P (k + T) := by
+      intro h
+      exact hk ((good_shift_Tmin_iff P k).1 h)
+
+    have hkT_not_mem :
+        k + T ∉ ((Window P k).filter (Good P)).erase k := by
+      intro h
+      have hmem :
+          k + T ∈ (Window P k).filter (Good P) :=
+        Finset.mem_of_mem_erase h
+      exact hkT_not_good (Finset.mem_filter.mp hmem).2
+
+    rw [Finset.card_insert_of_not_mem hkT_not_mem]
+    rw [Finset.erase_eq_of_not_mem hk_not_mem]
+
+    have hkT_not_in_insert :
+        k + T ∉ (Window P k).filter (Good P) := by
+      intro h
+      exact hkT_not_good (Finset.mem_filter.mp h).2
+
+    rw [Finset.card_insert_of_not_mem hkT_not_in_insert]
+
 end GDTReadingPoint
