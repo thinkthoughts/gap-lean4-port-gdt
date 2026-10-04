@@ -124,8 +124,7 @@ theorem coprime_radN_iff
 
   · intro hrad
     apply Nat.coprime_of_dvd
-    intro q hqprime hqdivn
-    intro hqdivN
+    intro q hqprime hqdivn hqdivN
 
     have hN0 : P.N ≠ 0 := Nat.ne_of_gt P.hN
 
