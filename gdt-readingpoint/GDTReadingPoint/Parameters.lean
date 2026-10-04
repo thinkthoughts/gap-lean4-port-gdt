@@ -17,10 +17,23 @@ def d (P : GDTReadingPoint.Params) : Nat :=
   ∏ q ∈ Nat.primeFactors P.N ∩ Nat.primeFactors P.m, q
 
 /--
+Prime support contributing to `R`: primes dividing `N` but not `m`.
+-/
+def Rset (P : GDTReadingPoint.Params) : Finset Nat :=
+  Nat.primeFactors P.N \ Nat.primeFactors P.m
+
+/--
 `R`: the radical contribution from primes dividing `N` but not `m`.
 -/
 def R (P : GDTReadingPoint.Params) : Nat :=
-  ∏ q ∈ Nat.primeFactors P.N \ Nat.primeFactors P.m, q
+  ∏ q ∈ Rset P, q
+
+/--
+`Rrest`: the complementary factor after removing one prime `q`
+from the prime support of `R`.
+-/
+def Rrest (P : GDTReadingPoint.Params) (q : Nat) : Nat :=
+  ∏ p ∈ (Rset P).erase q, p
 
 /-- `Tmin = mR`. -/
 def Tmin (P : GDTReadingPoint.Params) : Nat :=
@@ -31,8 +44,20 @@ The shared-prime and complementary-prime factors partition `radN`.
 -/
 theorem d_mul_R (P : GDTReadingPoint.Params) :
     d P * R P = radN P := by
-  unfold d R radN
+  unfold d R Rset radN
   exact Finset.prod_inter_mul_prod_diff _ _ _
+
+/--
+If `q` belongs to the prime support of `R`, then
+`R = q * Rrest`.
+-/
+theorem R_eq_q_mul_Rrest
+    (P : GDTReadingPoint.Params)
+    {q : Nat}
+    (hq : q ∈ Rset P) :
+    R P = q * Rrest P q := by
+  unfold R Rrest
+  rw [← Finset.prod_erase_mul _ _ hq]
 
 /--
 `m` is coprime to the complementary radical factor `R`.
@@ -45,7 +70,7 @@ theorem coprime_m_R (P : GDTReadingPoint.Params) :
   have hm0 : P.m ≠ 0 := Nat.ne_of_gt P.hm
 
   have hRpos : 0 < R P := by
-    unfold R
+    unfold R Rset
     apply Finset.prod_pos
     intro q hq
     have hqN :
@@ -60,7 +85,7 @@ theorem coprime_m_R (P : GDTReadingPoint.Params) :
   have hpfR :
       Nat.primeFactors (R P) =
         Nat.primeFactors P.N \ Nat.primeFactors P.m := by
-    unfold R
+    unfold R Rset
     apply Nat.primeFactors_prod
     intro q hq
     exact Nat.prime_of_mem_primeFactors
@@ -99,9 +124,6 @@ theorem d_dvd_N (P : GDTReadingPoint.Params) :
 
 /--
 The radical of `N` divides the proposed period `Tmin = mR`.
-
-This is the structural fact that will make GDT membership invariant
-under translation by `Tmin`.
 -/
 theorem radN_dvd_Tmin (P : GDTReadingPoint.Params) :
     radN P ∣ Tmin P := by
