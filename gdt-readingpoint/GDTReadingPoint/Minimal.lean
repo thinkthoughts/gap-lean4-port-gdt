@@ -189,8 +189,16 @@ theorem prime_dvd_period_of_mem_R
 
   have hcop_n_R :
       Nat.Coprime n.1 (Params.R P) := by
-    rw [Params.R_eq_q_mul_Rrest P hq]
-    exact hcop_n_q.mul_right hcop_n_Rrest
+    have hcop_prod :
+        Nat.Coprime n.1 (q * Params.Rrest P q) :=
+      hcop_n_q.mul_right hcop_n_Rrest
+
+    have hR_dvd_prod :
+        Params.R P ∣ q * Params.Rrest P q := by
+      refine ⟨1, ?_⟩
+      simpa using (Params.R_eq_q_mul_Rrest P hq).symm
+
+    exact hcop_prod.of_dvd_right hR_dvd_prod
 
   have hn_d :
       Nat.ModEq (Params.d P) n.1 P.a :=
