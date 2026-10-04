@@ -150,4 +150,28 @@ theorem goodCount_add_Tmin
 
   simpa [T] using hcard.symm
 
+/--
+Shifting the start of a counting window by any multiple of `Tmin`
+preserves the number of GDT-good reading points.
+-/
+theorem goodCount_add_mul_Tmin
+    (P : Params)
+    (k r : Nat) :
+    goodCount P (k + r * Params.Tmin P) =
+      goodCount P k := by
+  induction r with
+  | zero =>
+      simp
+
+  | succ r ihr =>
+      calc
+        goodCount P (k + (r + 1) * Params.Tmin P)
+            =
+          goodCount P ((k + r * Params.Tmin P) + Params.Tmin P) := by
+            congr 1
+            omega
+        _ = goodCount P (k + r * Params.Tmin P) := by
+              exact goodCount_add_Tmin P (k + r * Params.Tmin P)
+        _ = goodCount P k := ihr
+
 end GDTReadingPoint
