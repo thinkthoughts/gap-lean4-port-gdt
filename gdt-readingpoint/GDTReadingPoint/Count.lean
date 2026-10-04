@@ -387,7 +387,8 @@ theorem residuePoint_lt_Tmin
             exact Nat.add_lt_add_right ha_lt (P.m * t)
 
     _ = P.m * (t + 1) := by
-          omega
+          rw [Nat.mul_succ]
+          ac_rfl
 
     _ ≤ P.m * Params.R P := by
           exact Nat.mul_le_mul_left P.m ht1
