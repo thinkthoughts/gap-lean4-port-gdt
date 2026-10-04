@@ -42,20 +42,17 @@ prime support of `m`.
 theorem coprime_m_R (P : GDTReadingPoint.Params) :
     Nat.Coprime P.m (R P) := by
   unfold R
-  rw [Nat.coprime_comm]
-  refine Nat.coprime_of_dvd' ?_
-  intro q hqprime hqprod hqm
-  have hqmem :
-      q ∈ Nat.primeFactors P.N \ Nat.primeFactors P.m := by
-    have hqmemProd :
-        q ∈ Nat.primeFactors P.N \ Nat.primeFactors P.m := by
-      simpa using
-        (Finset.dvd_prod_iff_of_prime hqprime).mp hqprod
-    exact hqmemProd
-  have hqnotmem : q ∉ Nat.primeFactors P.m := hqmem.2
-  have hqmemm : q ∈ Nat.primeFactors P.m := by
-    exact Nat.mem_primeFactors.mpr ⟨hqprime, hqm, P.hm.ne'⟩
-  exact False.elim (hqnotmem hqmemm)
+  apply Nat.Coprime.prod_right
+  intro q hq
+  have hq' := Finset.mem_sdiff.mp hq
+  have hqN : q ∈ Nat.primeFactors P.N := hq'.1
+  have hqnotm : q ∉ Nat.primeFactors P.m := hq'.2
+  have hqprime : Nat.Prime q :=
+    Nat.prime_of_mem_primeFactors hqN
+  rw [Nat.Prime.coprime_iff_not_dvd hqprime]
+  intro hqdvd
+  apply hqnotm
+  exact Nat.mem_primeFactors.mpr ⟨hqprime, hqdvd, P.hm.ne'⟩
 
 end Params
 end GDTReadingPoint
