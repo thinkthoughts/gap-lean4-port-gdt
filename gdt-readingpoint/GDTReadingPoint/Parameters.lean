@@ -183,7 +183,8 @@ theorem coprime_q_Rrest
       (Finset.mem_sdiff.mp hq).1
 
   unfold Rrest
-  apply hqprime.coprime_prod_iff.mpr
+  rw [Nat.coprime_prod_right_iff]
+
   intro p hp
 
   have hpRset : p ∈ Rset P :=
@@ -193,13 +194,16 @@ theorem coprime_q_Rrest
     exact Nat.prime_of_mem_primeFactors
       (Finset.mem_sdiff.mp hpRset).1
 
-  have hpne : p ≠ q := by
-    exact Finset.ne_of_mem_erase hp
+  have hpne : p ≠ q :=
+    Finset.ne_of_mem_erase hp
 
-  exact hqprime.coprime_iff_not_dvd.mpr
-    (by
-      intro hdiv
-      exact hpne (hpprime.dvd_prime hqprime |>.mp hdiv))
+  rw [hqprime.coprime_iff_not_dvd]
+
+  intro hqp
+  have hpeq : p = q := by
+    exact (Nat.dvd_prime hpprime).mp hqp |>.resolve_left hqprime.ne_one |>.symm
+
+  exact hpne hpeq
 
 end Params
 end GDTReadingPoint
