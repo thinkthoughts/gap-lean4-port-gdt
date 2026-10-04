@@ -377,6 +377,19 @@ theorem residuePoint_lt_Tmin
       P.a % P.m < P.m :=
     Nat.mod_lt P.a P.hm
 
-  omega
+  have ht1 :
+      t + 1 ≤ Params.R P :=
+    Nat.succ_le_of_lt ht
+
+  calc
+    P.a % P.m + P.m * t
+        < P.m + P.m * t := by
+            exact Nat.add_lt_add_right ha_lt (P.m * t)
+
+    _ = P.m * (t + 1) := by
+          omega
+
+    _ ≤ P.m * Params.R P := by
+          exact Nat.mul_le_mul_left P.m ht1
 
 end GDTReadingPoint
