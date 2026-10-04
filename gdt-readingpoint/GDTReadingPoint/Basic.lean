@@ -13,34 +13,13 @@ structure Params where
   hN : 0 < N
   hm : 0 < m
 
-/--
-`d = rad(gcd(m,N))`.
-
-The exact `Nat.radical` API/import required by the host project should be
-confirmed before uncommenting the executable definition below.
--/
-
-/-
-def d (p : Params) : ℕ :=
-  Nat.radical (Nat.gcd p.m p.N)
--/
-
-/--
-`R = rad(N) / d`.
--/
-
-/-
-def R (p : Params) : ℕ :=
-  Nat.radical p.N / d p
--/
-
-/--
-The GDT minimal-period target: `Tmin = m * R`.
--/
-
-/-
-def Tmin (p : Params) : ℕ :=
-  p.m * R p
--/
+-- Planned GDT quantities:
+--
+-- d     = rad(gcd(m,N))
+-- R     = rad(N) / d
+-- Tmin  = m * R
+--
+-- We add these only after confirming the exact radical API
+-- available in the host Mathlib version.
 
 end GDTReadingPoint
