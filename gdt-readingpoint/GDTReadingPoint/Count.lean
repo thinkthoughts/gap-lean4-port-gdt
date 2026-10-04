@@ -422,4 +422,26 @@ theorem residuePoint_injective
 
   exact Nat.eq_of_mul_eq_mul_left hmpos hmul
 
+/--
+Every point in the initial window with the specified residue class
+is represented by some `residuePoint P t`.
+-/
+theorem exists_residuePoint_of_mod_eq
+    (P : Params)
+    {n : Nat}
+    (hnlt : n < Params.Tmin P)
+    (hmod : n % P.m = P.a % P.m) :
+    ∃ t, n = residuePoint P t := by
+  refine ⟨n / P.m, ?_⟩
+
+  unfold residuePoint
+
+  have hdecomp :
+      n = n % P.m + P.m * (n / P.m) := by
+    rw [Nat.mod_add_div]
+
+  rw [hmod] at hdecomp
+
+  exact hdecomp
+
 end GDTReadingPoint
