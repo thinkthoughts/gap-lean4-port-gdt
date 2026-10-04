@@ -404,4 +404,22 @@ theorem residuePoint_mod_m
   rw [Nat.add_mod, Nat.mul_mod]
   simp
 
+/--
+The affine parametrization `t ↦ a mod m + m*t` is injective.
+-/
+theorem residuePoint_injective
+    (P : Params) :
+    Function.Injective (residuePoint P) := by
+  intro t₁ t₂ h
+
+  unfold residuePoint at h
+
+  have hmpos : 0 < P.m := P.hm
+
+  have hmul :
+      P.m * t₁ = P.m * t₂ := by
+    exact Nat.add_left_cancel h
+
+  exact Nat.eq_of_mul_eq_mul_left hmpos hmul
+
 end GDTReadingPoint
