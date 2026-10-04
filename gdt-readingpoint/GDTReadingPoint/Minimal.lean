@@ -74,26 +74,12 @@ theorem prime_dvd_period_of_mem_R
     apply hqT
     exact Nat.dvd_of_mod_eq_zero hzero
 
-  /-
-  First CRT stage:
-
-      b ≡ -T  (mod q)
-      b ≡ 1   (mod Rrest)
-
-  `q - T % q` represents `-T mod q`.
-  -/
   let b :=
     Nat.chineseRemainder
       (Params.coprime_q_Rrest P hq)
       (q - T % q)
       1
 
-  /-
-  Second CRT stage:
-
-      n ≡ a  (mod m)
-      n ≡ b  (mod R)
-  -/
   let n :=
     Nat.chineseRemainder
       (Params.coprime_m_R P)
@@ -201,6 +187,51 @@ theorem prime_dvd_period_of_mem_R
       Nat.Coprime n.1 q :=
     hcop_q_n.symm
 
-  sorry
+  have hcop_n_R :
+      Nat.Coprime n.1 (Params.R P) := by
+    rw [Params.R_eq_q_mul_Rrest P hq]
+    exact hcop_n_q.mul_right hcop_n_Rrest
+
+  have hn_d :
+      Nat.ModEq (Params.d P) n.1 P.a :=
+    hn_m.of_dvd (Params.d_dvd_m P)
+
+  have hcop_n_d :
+      Nat.Coprime n.1 (Params.d P) := by
+    rw [Nat.coprime_iff_gcd_eq_one]
+    rw [hn_d.gcd_eq]
+    exact hadm.gcd_eq_one
+
+  have hcop_n_radN :
+      Nat.Coprime n.1 (Params.radN P) := by
+    rw [← Params.d_mul_R P]
+    exact hcop_n_d.mul_right hcop_n_R
+
+  have hcop_n_N :
+      Nat.Coprime n.1 P.N :=
+    (Params.coprime_radN_iff P n.1).1 hcop_n_radN
+
+  have hn_good : Good P n.1 := by
+    constructor
+    · exact hn_m
+    · exact hcop_n_N
+
+  have hnT_good : Good P (n.1 + T) :=
+    (hT n.1).2 hn_good
+
+  have hqNmem :
+      q ∈ Nat.primeFactors P.N :=
+    (Finset.mem_sdiff.mp hq).1
+
+  have hq_dvd_N : q ∣ P.N :=
+    (Nat.mem_primeFactors.mp hqNmem).2.1
+
+  have hcop_q_N :
+      Nat.Coprime q P.N :=
+    hnT_good.2.of_dvd_left hq_dvd_nT
+
+  exact
+    (hqprime.coprime_iff_not_dvd.mp hcop_q_N)
+      hq_dvd_N
 
 end GDTReadingPoint
