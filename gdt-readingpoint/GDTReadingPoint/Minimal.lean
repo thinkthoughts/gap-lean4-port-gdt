@@ -242,4 +242,21 @@ theorem prime_dvd_period_of_mem_R
     (hqprime.coprime_iff_not_dvd.mp hcop_q_N)
       hq_dvd_N
 
+/--
+For an admissible GDT class, the complementary radical factor `R`
+divides every period.
+-/
+theorem R_dvd_period
+    (P : Params)
+    (hadm : Admissible P.a (Params.d P))
+    {T : Nat}
+    (hT : IsPeriod P T) :
+    Params.R P ∣ T := by
+  unfold Params.R
+
+  apply Finset.prod_dvd
+  intro q hq
+
+  exact prime_dvd_period_of_mem_R P hadm hT hq
+
 end GDTReadingPoint
