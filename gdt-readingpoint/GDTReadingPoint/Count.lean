@@ -393,4 +393,15 @@ theorem residuePoint_lt_Tmin
     _ ≤ P.m * Params.R P := by
           exact Nat.mul_le_mul_left P.m ht1
 
+/--
+`residuePoint P t` always lies in the residue class `a mod m`.
+-/
+theorem residuePoint_mod_m
+    (P : Params)
+    (t : Nat) :
+    residuePoint P t % P.m = P.a % P.m := by
+  unfold residuePoint
+  rw [Nat.add_mod, Nat.mul_mod]
+  simp
+
 end GDTReadingPoint
