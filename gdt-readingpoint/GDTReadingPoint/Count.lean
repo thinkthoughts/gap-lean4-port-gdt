@@ -4,6 +4,17 @@ import GDTReadingPoint.Minimal
 namespace GDTReadingPoint
 
 /--
+`Good P n` is decidable because both the residue condition
+and natural-number coprimality are decidable.
+-/
+instance goodDecidable
+    (P : Params)
+    (n : Nat) :
+    Decidable (Good P n) := by
+  unfold Good
+  infer_instance
+
+/--
 The half-open GDT counting window
 
     [k, k + Tmin)
