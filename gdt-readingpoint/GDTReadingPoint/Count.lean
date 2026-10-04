@@ -65,4 +65,13 @@ theorem mem_good_filter_iff
       Good P n := by
   simp [Window, and_assoc]
 
+/--
+GDT membership repeats after one full `Tmin` interval.
+-/
+theorem good_shift_Tmin_iff
+    (P : Params)
+    (n : Nat) :
+    Good P (n + Params.Tmin P) ↔ Good P n := by
+  exact good_add_Tmin_iff P n
+
 end GDTReadingPoint
