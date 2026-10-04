@@ -1,5 +1,5 @@
 import GDTReadingPoint.Admissible
-import RequestProject.Gap.Library.Zmodnz
+import Gap.Library.Zmodnz
 
 namespace GDTReadingPoint
 
