@@ -353,4 +353,30 @@ theorem goodCount_eq_zero
           goodCount_succ P k
         _ = goodCount P 0 := ih
 
+/--
+The unique point in the residue class `a mod m`
+corresponding to parameter `t`.
+-/
+def residuePoint
+    (P : Params)
+    (t : Nat) : Nat :=
+  P.a % P.m + P.m * t
+
+/--
+For `t < R`, the corresponding residue-class point lies
+inside the initial period `[0, Tmin)`.
+-/
+theorem residuePoint_lt_Tmin
+    (P : Params)
+    {t : Nat}
+    (ht : t < Params.R P) :
+    residuePoint P t < Params.Tmin P := by
+  unfold residuePoint Params.Tmin
+
+  have ha_lt :
+      P.a % P.m < P.m :=
+    Nat.mod_lt P.a P.hm
+
+  omega
+
 end GDTReadingPoint
