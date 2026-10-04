@@ -1,5 +1,6 @@
 import Mathlib.Data.Nat.Factorization.Basic
 import GDTReadingPoint.Basic
+import Mathlib.Data.Nat.Squarefree
 
 namespace GDTReadingPoint
 namespace Params
@@ -41,18 +42,32 @@ prime support of `m`.
 -/
 theorem coprime_m_R (P : GDTReadingPoint.Params) :
     Nat.Coprime P.m (R P) := by
-  unfold R
-  apply Nat.Coprime.prod_right
-  intro q hq
-  have hq' := Finset.mem_sdiff.mp hq
-  have hqN : q ∈ Nat.primeFactors P.N := hq'.1
-  have hqnotm : q ∉ Nat.primeFactors P.m := hq'.2
-  have hqprime : Nat.Prime q :=
-    Nat.prime_of_mem_primeFactors hqN
-  rw [Nat.Prime.coprime_iff_not_dvd hqprime]
-  intro hqdvd
-  apply hqnotm
-  exact Nat.mem_primeFactors.mpr ⟨hqprime, hqdvd, P.hm.ne'⟩
+  have hm0 : P.m ≠ 0 := Nat.ne_of_gt P.hm
+
+  have hRpos : 0 < R P := by
+    unfold R
+    apply Finset.prod_pos
+    intro q hq
+    have hqN :
+        q ∈ Nat.primeFactors P.N :=
+      (Finset.mem_sdiff.mp hq).1
+    exact (Nat.prime_of_mem_primeFactors hqN).pos
+
+  have hR0 : R P ≠ 0 := Nat.ne_of_gt hRpos
+
+  apply (Nat.disjoint_primeFactors hm0 hR0).mp
+
+  have hpfR :
+      Nat.primeFactors (R P) =
+        Nat.primeFactors P.N \ Nat.primeFactors P.m := by
+    unfold R
+    apply Nat.primeFactors_prod
+    intro q hq
+    exact Nat.prime_of_mem_primeFactors
+      (Finset.mem_sdiff.mp hq).1
+
+  rw [hpfR]
+  exact Finset.disjoint_sdiff_right
 
 end Params
 end GDTReadingPoint
