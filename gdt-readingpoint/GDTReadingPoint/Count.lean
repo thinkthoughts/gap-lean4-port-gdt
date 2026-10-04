@@ -224,7 +224,7 @@ theorem goodCount_succ
       · apply (mem_Window_iff P (k + 1) (f k)).2
         dsimp [f]
         simp
-        dsimp [T] at hTpos ⊢
+        simp only [T] at hTpos ⊢
         omega
       · dsimp [f]
         simp
@@ -261,6 +261,7 @@ theorem goodCount_succ
       (mem_Window_iff P k b).1 hbWindow
 
     by_cases hak : a = k
+
     · subst a
       by_cases hbk : b = k
       · exact hbk.symm
@@ -270,6 +271,7 @@ theorem goodCount_succ
         omega
 
     · by_cases hbk : b = k
+
       · subst b
         dsimp [f] at hab
         simp [hak] at hab
@@ -302,7 +304,7 @@ theorem goodCount_succ
       · rw [Finset.mem_filter]
         constructor
         · apply (mem_Window_iff P k k).2
-          dsimp [T] at hTpos ⊢
+          simp only [T] at hTpos ⊢
           omega
         · have hyGood' : Good P (k + Params.Tmin P) := by
             simpa [T, hyEnd] using hyGood
@@ -316,7 +318,7 @@ theorem goodCount_succ
       · rw [Finset.mem_filter]
         constructor
         · apply (mem_Window_iff P k y).2
-          dsimp [T] at hyBounds hyEnd ⊢
+          simp only [T] at hyBounds hyEnd ⊢
           omega
         · exact hyGood
 
@@ -335,4 +337,5 @@ theorem goodCount_succ
     · exact hsurjective
 
   exact hcard.symm
+
 end GDTReadingPoint
