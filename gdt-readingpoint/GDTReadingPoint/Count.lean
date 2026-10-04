@@ -235,7 +235,6 @@ theorem goodCount_succ
       · apply (mem_Window_iff P (k + 1) (f n)).2
         dsimp [f]
         simp [hnk]
-        simp only [T] at hnBounds ⊢
         omega
       · dsimp [f]
         simp [hnk, hnGood]
@@ -318,13 +317,12 @@ theorem goodCount_succ
       · rw [Finset.mem_filter]
         constructor
         · apply (mem_Window_iff P k y).2
-          simp only [T] at hyBounds hyEnd ⊢
+          simp only [T] at hyEnd ⊢
           omega
         · exact hyGood
 
       · dsimp [f]
         have hy_ne_k : y ≠ k := by
-          simp only [T] at hyBounds
           omega
         simp [hy_ne_k]
 
