@@ -43,4 +43,79 @@ theorem m_dvd_period
 
   exact Nat.add_modEq_left_iff.mp hmod
 
+/--
+Every prime in the complementary radical support `Rset`
+divides every period of an admissible GDT class.
+
+The proof constructs a CRT witness engineered so that translation
+by `T` introduces divisibility by `q`, contradicting preservation
+of the coprimality condition unless `q ∣ T`.
+-/
+theorem prime_dvd_period_of_mem_R
+    (P : Params)
+    (hadm : Admissible P.a (Params.d P))
+    {T q : Nat}
+    (hT : IsPeriod P T)
+    (hq : q ∈ Params.Rset P) :
+    q ∣ T := by
+
+  have hqprime : Nat.Prime q := by
+    exact Nat.prime_of_mem_primeFactors
+      (Finset.mem_sdiff.mp hq).1
+
+  have hqR : q ∣ Params.R P := by
+    rw [Params.R_eq_q_mul_Rrest P hq]
+    exact dvd_mul_right q (Params.Rrest P q)
+
+  by_contra hqT
+
+  have hTmod_ne : T % q ≠ 0 := by
+    intro hzero
+    apply hqT
+    exact Nat.dvd_of_mod_eq_zero hzero
+
+  /-
+  First CRT stage:
+
+      b ≡ -T  (mod q)
+      b ≡ 1   (mod Rrest)
+
+  `q - T % q` represents `-T mod q`.
+  -/
+  let b :=
+    Nat.chineseRemainder
+      (Params.coprime_q_Rrest P hq)
+      (q - T % q)
+      1
+
+  /-
+  Second CRT stage:
+
+      n ≡ a  (mod m)
+      n ≡ b  (mod R)
+  -/
+  let n :=
+    Nat.chineseRemainder
+      (Params.coprime_m_R P)
+      P.a
+      b.1
+
+  have hn_m :
+      Nat.ModEq P.m n.1 P.a :=
+    n.2.1
+
+  have hn_R :
+      Nat.ModEq (Params.R P) n.1 b.1 :=
+    n.2.2
+
+  have hb_q :
+      Nat.ModEq q b.1 (q - T % q) :=
+    b.2.1
+
+  have hb_Rrest :
+      Nat.ModEq (Params.Rrest P q) b.1 1 :=
+    b.2.2
+
+  sorry
+
 end GDTReadingPoint
