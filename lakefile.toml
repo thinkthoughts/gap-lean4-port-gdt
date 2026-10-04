@@ -1,5 +1,5 @@
 name = "RequestProject"
-defaultTargets = ["RequestProject"]
+defaultTargets = ["RequestProject", "GDTReadingPoint"]
 
 [[require]]
 name = "mathlib"
@@ -9,3 +9,8 @@ rev = "v4.28.0"
 [[lean_lib]]
 name = "RequestProject"
 globs = ["RequestProject.+"]
+
+[[lean_lib]]
+name = "GDTReadingPoint"
+srcDir = "gdt-readingpoint"
+globs = ["GDTReadingPoint", "GDTReadingPoint.+"]
