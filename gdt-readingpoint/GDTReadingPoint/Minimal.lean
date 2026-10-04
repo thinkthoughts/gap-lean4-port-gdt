@@ -253,43 +253,71 @@ theorem R_dvd_period
     (hT : IsPeriod P T) :
     Params.R P ∣ T := by
 
-  by_cases hT0 : T = 0
-  · subst T
-    simp
-
-  have hpfR :
-      Nat.primeFactors (Params.R P) = Params.Rset P := by
-    unfold Params.R
-    apply Nat.primeFactors_prod
-    intro q hq
-    change
-      q ∈ Nat.primeFactors P.N \ Nat.primeFactors P.m
-      at hq
-    exact Nat.prime_of_mem_primeFactors
-      (Finset.mem_sdiff.mp hq).1
-
-  have hsubset :
-      Nat.primeFactors (Params.R P) ⊆ Nat.primeFactors T := by
-    rw [hpfR]
-    intro q hq
-
-    have hqprime : Nat.Prime q := by
-      exact Nat.prime_of_mem_primeFactors
-        (Finset.mem_sdiff.mp hq).1
-
-    have hqT : q ∣ T :=
-      prime_dvd_period_of_mem_R P hadm hT hq
-
-    exact Nat.mem_primeFactors.mpr
-      ⟨hqprime, hqT, hT0⟩
+  classical
 
   have hprod :
-      (∏ p ∈ Nat.primeFactors (Params.R P), p) ∣ T :=
-    (Nat.prod_primeFactors_dvd_iff hT0).2 hsubset
+      ∀ s : Finset Nat,
+        s ⊆ Params.Rset P →
+        (∏ q ∈ s, q) ∣ T := by
+    intro s hs
+    induction s using Finset.induction_on with
+    | empty =>
+        simp
 
-  rw [hpfR] at hprod
+    | @insert q s hq_not_mem ih =>
+        have hqRset : q ∈ Params.Rset P := by
+          apply hs
+          exact Finset.mem_insert_self q s
 
-  simpa [Params.R] using hprod
+        have hsRset : s ⊆ Params.Rset P := by
+          intro p hp
+          apply hs
+          exact Finset.mem_insert_of_mem hp
+
+        have hqT : q ∣ T :=
+          prime_dvd_period_of_mem_R P hadm hT hqRset
+
+        have hsT :
+            (∏ p ∈ s, p) ∣ T :=
+          ih hsRset
+
+        have hqprime : Nat.Prime q := by
+          exact Nat.prime_of_mem_primeFactors
+            (Finset.mem_sdiff.mp hqRset).1
+
+        have hcop :
+            Nat.Coprime q (∏ p ∈ s, p) := by
+          rw [Nat.coprime_prod_right_iff]
+          intro p hp
+
+          have hpRset : p ∈ Params.Rset P :=
+            hsRset hp
+
+          have hpprime : Nat.Prime p := by
+            exact Nat.prime_of_mem_primeFactors
+              (Finset.mem_sdiff.mp hpRset).1
+
+          have hq_ne_p : q ≠ p := by
+            intro hqp
+            apply hq_not_mem
+            simpa [hqp] using hp
+
+          exact
+            (Nat.coprime_primes hqprime hpprime).2 hq_ne_p
+
+        have hmul :
+            q * (∏ p ∈ s, p) ∣ T :=
+          hcop.mul_dvd_of_dvd_of_dvd hqT hsT
+
+        simpa [Finset.prod_insert, hq_not_mem] using hmul
+
+  have hR :
+      (∏ q ∈ Params.Rset P, q) ∣ T :=
+    hprod (Params.Rset P) (by
+      intro q hq
+      exact hq)
+
+  simpa [Params.R] using hR
 
 /--
 For an admissible GDT class, every period is a multiple of
