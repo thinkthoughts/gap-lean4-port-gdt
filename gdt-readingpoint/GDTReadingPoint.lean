@@ -4,5 +4,6 @@ import GDTReadingPoint.ZmodBridge
 import GDTReadingPoint.Parameters
 import GDTReadingPoint.Good
 import GDTReadingPoint.Empty
+import GDTReadingPoint.Nonempty
 import GDTReadingPoint.Period
 import GDTReadingPoint.Examples
