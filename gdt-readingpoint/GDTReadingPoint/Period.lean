@@ -1,3 +1,4 @@
+import Mathlib.Data.Nat.ModEq
 import GDTReadingPoint.Good
 
 namespace GDTReadingPoint
@@ -13,73 +14,75 @@ theorem m_dvd_Tmin (P : Params) :
 /--
 Translation by `Tmin` preserves membership in the GDT-conditioned set.
 
-This periodicity statement is unconditional: admissibility is needed for
-the empty/nonempty dichotomy and later minimality/count statements, but not
-for preservation of membership under a full period shift.
+This periodicity statement is unconditional: admissibility controls the
+empty/nonempty branch and later minimality/count statements, but translation
+by the full period preserves membership for every residue class.
 -/
 theorem good_add_Tmin_iff
     (P : Params) (n : Nat) :
     Good P (n + Params.Tmin P) ↔ Good P n := by
+
+  have hmod_m :
+      Nat.ModEq P.m (n + Params.Tmin P) n := by
+    unfold Nat.ModEq
+    rcases m_dvd_Tmin P with ⟨k, hk⟩
+    rw [hk]
+    simp [Nat.add_mod]
+
+  have hmod_rad :
+      Nat.ModEq (Params.radN P) (n + Params.Tmin P) n := by
+    unfold Nat.ModEq
+    rcases Params.radN_dvd_Tmin P with ⟨k, hk⟩
+    rw [hk]
+    simp [Nat.add_mod]
+
   constructor
 
-  · intro h
+  · rintro ⟨hres, hcop⟩
     constructor
 
-    · have hm : P.m ∣ Params.Tmin P :=
-        m_dvd_Tmin P
-      rcases hm with ⟨k, hk⟩
-      unfold Good at h ⊢
-      dsimp at h ⊢
-      rw [hk] at h
-      simpa [Nat.add_mod] using h.1
+    · change Nat.ModEq P.m n P.a
+      change Nat.ModEq P.m (n + Params.Tmin P) P.a at hres
+      exact hmod_m.symm.trans hres
 
-    · have hrad :
-          Nat.Coprime (n + Params.Tmin P) (Params.radN P) := by
-        exact (Params.coprime_radN_iff P (n + Params.Tmin P)).2 h.2
+    · have hshiftRad :
+          Nat.Coprime (n + Params.Tmin P) (Params.radN P) :=
+        (Params.coprime_radN_iff P (n + Params.Tmin P)).2 hcop
 
-      have hmod :
-          (n + Params.Tmin P) % Params.radN P =
-            n % Params.radN P := by
-        rcases Params.radN_dvd_Tmin P with ⟨k, hk⟩
-        rw [hk]
-        simp [Nat.add_mod]
+      have hgcd :
+          Nat.gcd n (Params.radN P) = 1 := by
+        rw [← hmod_rad.gcd_eq]
+        exact hshiftRad.gcd_eq_one
 
-      have hnrad : Nat.Coprime n (Params.radN P) := by
-        rw [Nat.coprime_comm] at hrad ⊢
-        rw [Nat.coprime_comm]
-        simpa [hmod] using hrad
+      have hnRad :
+          Nat.Coprime n (Params.radN P) := by
+        rw [Nat.coprime_iff_gcd_eq_one]
+        exact hgcd
 
-      exact (Params.coprime_radN_iff P n).1 hnrad
+      exact (Params.coprime_radN_iff P n).1 hnRad
 
-  · intro h
+  · rintro ⟨hres, hcop⟩
     constructor
 
-    · have hm : P.m ∣ Params.Tmin P :=
-        m_dvd_Tmin P
-      rcases hm with ⟨k, hk⟩
-      unfold Good at h ⊢
-      dsimp at h ⊢
-      rw [hk]
-      simpa [Nat.add_mod] using h.1
+    · change Nat.ModEq P.m (n + Params.Tmin P) P.a
+      change Nat.ModEq P.m n P.a at hres
+      exact hmod_m.trans hres
 
-    · have hnrad :
+    · have hnRad :
           Nat.Coprime n (Params.radN P) :=
-        (Params.coprime_radN_iff P n).2 h.2
+        (Params.coprime_radN_iff P n).2 hcop
 
-      have hmod :
-          (n + Params.Tmin P) % Params.radN P =
-            n % Params.radN P := by
-        rcases Params.radN_dvd_Tmin P with ⟨k, hk⟩
-        rw [hk]
-        simp [Nat.add_mod]
+      have hgcd :
+          Nat.gcd (n + Params.Tmin P) (Params.radN P) = 1 := by
+        rw [hmod_rad.gcd_eq]
+        exact hnRad.gcd_eq_one
 
-      have hshift :
+      have hshiftRad :
           Nat.Coprime (n + Params.Tmin P) (Params.radN P) := by
-        rw [Nat.coprime_comm] at hnrad ⊢
-        rw [Nat.coprime_comm]
-        simpa [hmod] using hnrad
+        rw [Nat.coprime_iff_gcd_eq_one]
+        exact hgcd
 
       exact
-        (Params.coprime_radN_iff P (n + Params.Tmin P)).1 hshift
+        (Params.coprime_radN_iff P (n + Params.Tmin P)).1 hshiftRad
 
 end GDTReadingPoint
