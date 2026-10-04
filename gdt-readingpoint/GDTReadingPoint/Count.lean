@@ -194,7 +194,7 @@ theorem goodCount_succ
         (Finset.mem_sdiff.mp hq).1).pos
 
   have hTpos : 0 < T := by
-    dsimp [T]
+    simp only [T]
     exact Nat.mul_pos P.hm hRpos
 
   /-
@@ -228,14 +228,14 @@ theorem goodCount_succ
         omega
       · dsimp [f]
         simp
-        dsimp [T]
+        simp only [T]
         exact (good_shift_Tmin_iff P k).2 hnGood
 
     · constructor
       · apply (mem_Window_iff P (k + 1) (f n)).2
         dsimp [f]
         simp [hnk]
-        dsimp [T] at hnBounds ⊢
+        simp only [T] at hnBounds ⊢
         omega
       · dsimp [f]
         simp [hnk, hnGood]
@@ -267,7 +267,7 @@ theorem goodCount_succ
       · exact hbk.symm
       · dsimp [f] at hab
         simp [hbk] at hab
-        dsimp [T] at haBounds hbBounds hab
+        simp only [T] at haBounds hbBounds hab
         omega
 
     · by_cases hbk : b = k
@@ -275,7 +275,7 @@ theorem goodCount_succ
       · subst b
         dsimp [f] at hab
         simp [hak] at hab
-        dsimp [T] at haBounds hbBounds hab
+        simp only [T] at haBounds hbBounds hab
         omega
 
       · dsimp [f] at hab
@@ -324,7 +324,7 @@ theorem goodCount_succ
 
       · dsimp [f]
         have hy_ne_k : y ≠ k := by
-          dsimp [T] at hyBounds
+          simp only [T] at hyBounds
           omega
         simp [hy_ne_k]
 
