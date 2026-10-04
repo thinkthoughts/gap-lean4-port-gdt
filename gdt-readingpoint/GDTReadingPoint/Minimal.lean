@@ -32,11 +32,14 @@ theorem m_dvd_period
   have hnT : Good P (n + T) :=
     (hT n).2 hn
 
-  have hmod :
-      Nat.ModEq P.m (n + T) n := by
-    change Nat.ModEq P.m (n + T) P.a at hnT
-    change Nat.ModEq P.m n P.a at hn
-    exact hnT.1.trans hn.1.symm
+  rcases hn with ⟨hnres, hncop⟩
+  rcases hnT with ⟨hnTres, hnTcop⟩
+
+  change Nat.ModEq P.m n P.a at hnres
+  change Nat.ModEq P.m (n + T) P.a at hnTres
+
+  have hmod : Nat.ModEq P.m (n + T) n :=
+    hnTres.trans hnres.symm
 
   exact Nat.add_modEq_left_iff.mp hmod
 
