@@ -8,4 +8,5 @@ import GDTReadingPoint.Nonempty
 import GDTReadingPoint.Period
 import GDTReadingPoint.Minimal
 import GDTReadingPoint.Count
+import GDTReadingPoint.Density
 import GDTReadingPoint.Examples
