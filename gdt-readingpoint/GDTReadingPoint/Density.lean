@@ -29,7 +29,13 @@ theorem density_eq_totient_div_mR
       (Nat.totient (Params.R P) : ℚ) /
         ((P.m : ℚ) * (Params.R P : ℚ)) := by
   unfold density Params.Tmin
-  push_cast
+
+  have hmul :
+      ((↑(P.m * Params.R P) : ℚ)) =
+        (↑P.m : ℚ) * (↑(Params.R P) : ℚ) := by
+    exact_mod_cast (rfl : P.m * Params.R P = P.m * Params.R P)
+
+  rw [hmul]
 
 /--
 For every admissible class and every period-length window,
