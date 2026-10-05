@@ -811,4 +811,26 @@ theorem goodCount_zero_eq_card_coprime_residueImage
 
   · exact hsurjective
 
+/--
+In the admissible branch, the number of GDT-good points in the
+initial period is exactly Euler's totient of `R`.
+-/
+theorem goodCount_zero_eq_totient_R
+    (P : Params)
+    (hadm : Admissible P.a (Params.d P)) :
+    goodCount P 0 = Nat.totient (Params.R P) := by
+  rw [goodCount_zero_eq_card_coprime_residueImage P hadm]
+  exact card_coprime_residueImage P
+
+/--
+Every length-`Tmin` window contains exactly `φ(R)` GDT-good points.
+-/
+theorem goodCount_eq_totient_R
+    (P : Params)
+    (hadm : Admissible P.a (Params.d P))
+    (k : Nat) :
+    goodCount P k = Nat.totient (Params.R P) := by
+  rw [goodCount_eq_zero P k]
+  exact goodCount_zero_eq_totient_R P hadm
+
 end GDTReadingPoint
