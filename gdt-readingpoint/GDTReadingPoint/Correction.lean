@@ -71,6 +71,9 @@ theorem density_eq_correction_mul_baseline
       Nat.totient (Params.d P) ≠ 0 :=
     Nat.ne_of_gt hphidpos
 
+  have hm0 : (P.m : ℚ) ≠ 0 := by
+    exact Nat.cast_ne_zero.mpr hmNat0
+
   norm_num only [Nat.cast_mul]
 
   field_simp [
@@ -80,6 +83,6 @@ theorem density_eq_correction_mul_baseline
     hphidNat0
   ]
 
-  simp [hmNat0]
+  exact (div_self hm0).symm
 
 end GDTReadingPoint
