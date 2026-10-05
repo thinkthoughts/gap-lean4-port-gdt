@@ -59,20 +59,30 @@ theorem density_eq_correction_mul_baseline
     exact Nat.totient_pos.mpr hdpos
 
   have hm0 : (P.m : ℚ) ≠ 0 := by
-    positivity
+    have h : (0 : ℚ) < (P.m : ℚ) := by
+      exact_mod_cast P.hm
+    exact ne_of_gt h
 
   have hR0 : (Params.R P : ℚ) ≠ 0 := by
-    positivity
+    have h : (0 : ℚ) < (Params.R P : ℚ) := by
+      exact_mod_cast hRpos
+    exact ne_of_gt h
 
   have hd0 : (Params.d P : ℚ) ≠ 0 := by
-    positivity
+    have h : (0 : ℚ) < (Params.d P : ℚ) := by
+      exact_mod_cast hdpos
+    exact ne_of_gt h
 
   have hphid0 :
       (Nat.totient (Params.d P) : ℚ) ≠ 0 := by
-    positivity
+    have h :
+        (0 : ℚ) <
+          (Nat.totient (Params.d P) : ℚ) := by
+      exact_mod_cast hphidpos
+    exact ne_of_gt h
 
-  field_simp [hm0, hR0, hd0, hphid0]
   norm_num only [Nat.cast_mul]
+  field_simp [hm0, hR0, hd0, hphid0]
   ring
 
 end GDTReadingPoint
