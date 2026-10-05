@@ -33,7 +33,7 @@ theorem density_eq_totient_div_mR
   have hcast :
       ((P.m * Params.R P : Nat) : ℚ) =
         (P.m : ℚ) * (Params.R P : ℚ) := by
-    exact Nat.cast_mul P.m (Params.R P)
+    norm_cast
 
   rw [hcast]
 
