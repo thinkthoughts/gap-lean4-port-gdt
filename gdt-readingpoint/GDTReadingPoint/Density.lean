@@ -4,14 +4,14 @@ namespace GDTReadingPoint
 
 /--
 The exact GDT density in the admissible branch:
-`φ(R) / (mR)`.
+`φ(R) / Tmin`.
 -/
 def density (P : Params) : ℚ :=
   (Nat.totient (Params.R P) : ℚ) /
     (Params.Tmin P : ℚ)
 
 /--
-The density expressed using the specified period `Tmin = mR`.
+The density expressed using the specified period `Tmin`.
 -/
 theorem density_eq_totient_div_Tmin
     (P : Params) :
@@ -22,20 +22,16 @@ theorem density_eq_totient_div_Tmin
 
 /--
 The density expressed in the GDT form `φ(R) / (mR)`.
+
+The product `mR` is formed in `Nat` and then cast to `ℚ`,
+matching the definition of `Tmin`.
 -/
 theorem density_eq_totient_div_mR
     (P : Params) :
     density P =
       (Nat.totient (Params.R P) : ℚ) /
-        ((P.m : ℚ) * (Params.R P : ℚ)) := by
-  unfold density Params.Tmin
-
-  have hmul :
-      ((↑(P.m * Params.R P) : ℚ)) =
-        (↑P.m : ℚ) * (↑(Params.R P) : ℚ) := by
-    exact_mod_cast (rfl : P.m * Params.R P = P.m * Params.R P)
-
-  rw [hmul]
+        ((P.m * Params.R P : Nat) : ℚ) := by
+  rfl
 
 /--
 For every admissible class and every period-length window,
