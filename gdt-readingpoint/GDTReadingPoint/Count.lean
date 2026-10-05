@@ -623,4 +623,20 @@ theorem card_residueImage
     _ = Params.R P := by
           simp
 
+/--
+The affine residue map permutes the complete residue system modulo `R`.
+-/
+theorem residueImage_eq_range
+    (P : Params) :
+    residueImage P = Finset.range (Params.R P) := by
+  apply Finset.eq_of_subset_of_card_le
+
+  · intro x hx
+    rw [residueImage, Finset.mem_image] at hx
+    rcases hx with ⟨t, ht, rfl⟩
+    simp
+
+  · rw [card_residueImage]
+    simp
+
 end GDTReadingPoint
