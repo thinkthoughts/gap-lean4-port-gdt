@@ -488,5 +488,62 @@ theorem exists_residuePoint_lt_R
   refine ⟨t, ?_, ht⟩
 
   exact residuePoint_index_lt_R P hnlt ht
+/--
+For an admissible residue class, a parametrized residue point is
+GDT-good exactly where it is coprime to the complementary factor `R`.
+-/
+theorem good_residuePoint_iff_coprime_R
+    (P : Params)
+    (hadm : Admissible P.a (Params.d P))
+    (t : Nat) :
+    Good P (residuePoint P t) ↔
+      Nat.Coprime (residuePoint P t) (Params.R P) := by
+  constructor
+
+  · intro hgood
+
+    have hcop_radN :
+        Nat.Coprime (residuePoint P t) (Params.radN P) :=
+      (Params.coprime_radN_iff P (residuePoint P t)).2 hgood.2
+
+    have hR_dvd_radN :
+        Params.R P ∣ Params.radN P := by
+      refine ⟨Params.d P, ?_⟩
+      rw [← Params.d_mul_R P]
+      ac_rfl
+
+    exact hcop_radN.of_dvd_right hR_dvd_radN
+
+  · intro hcop_R
+
+    have hmod_m :
+        Nat.ModEq P.m (residuePoint P t) P.a := by
+      change
+        residuePoint P t % P.m = P.a % P.m
+      exact residuePoint_mod_m P t
+
+    have hmod_d :
+        Nat.ModEq (Params.d P) (residuePoint P t) P.a :=
+      hmod_m.of_dvd (Params.d_dvd_m P)
+
+    have hcop_d :
+        Nat.Coprime (residuePoint P t) (Params.d P) := by
+      rw [Nat.coprime_iff_gcd_eq_one]
+      rw [hmod_d.gcd_eq]
+      exact hadm.gcd_eq_one
+
+    have hcop_radN :
+        Nat.Coprime (residuePoint P t) (Params.radN P) := by
+      rw [← Params.d_mul_R P]
+      exact hcop_d.mul_right hcop_R
+
+    have hcop_N :
+        Nat.Coprime (residuePoint P t) P.N :=
+      (Params.coprime_radN_iff P (residuePoint P t)).1
+        hcop_radN
+
+    constructor
+    · exact residuePoint_mod_m P t
+    · exact hcop_N
 
 end GDTReadingPoint
