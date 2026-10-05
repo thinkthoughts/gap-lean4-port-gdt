@@ -1,6 +1,7 @@
 import Mathlib.Data.Finset.Interval
 import GDTReadingPoint.Minimal
 import Mathlib.Tactic
+import Mathlib.Data.Nat.Totient
 
 namespace GDTReadingPoint
 
@@ -648,5 +649,20 @@ theorem residueImage_eq_range
 
   · rw [card_residueImage]
     simp
+
+/--
+The residues in `residueImage` that are coprime to `R`
+are counted by Euler's totient.
+-/
+theorem card_coprime_residueImage
+    (P : Params) :
+    ((residueImage P).filter
+      (fun r => Nat.Coprime r (Params.R P))).card
+      =
+    Nat.totient (Params.R P) := by
+  rw [residueImage_eq_range P]
+
+  simpa [Nat.coprime_comm] using
+    (Nat.totient_eq_card_coprime (Params.R P)).symm
 
 end GDTReadingPoint
