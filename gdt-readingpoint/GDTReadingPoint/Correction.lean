@@ -80,4 +80,6 @@ theorem density_eq_correction_mul_baseline
     hphidNat0
   ]
 
+  simp [hmNat0]
+
 end GDTReadingPoint
