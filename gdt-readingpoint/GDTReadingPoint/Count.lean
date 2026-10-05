@@ -665,4 +665,24 @@ theorem card_coprime_residueImage
   simpa [Nat.coprime_comm] using
     (Nat.totient_eq_card_coprime (Params.R P)).symm
 
+/--
+Reducing a natural number modulo `R` preserves coprimality with `R`.
+-/
+theorem coprime_mod_R_iff
+    (P : Params)
+    (n : Nat) :
+    Nat.Coprime (n % Params.R P) (Params.R P) ↔
+      Nat.Coprime n (Params.R P) := by
+
+  have hmod :
+      Nat.ModEq (Params.R P)
+        (n % Params.R P)
+        n := by
+    unfold Nat.ModEq
+    simp
+
+  rw [Nat.coprime_iff_gcd_eq_one]
+  rw [Nat.coprime_iff_gcd_eq_one]
+  rw [hmod.gcd_eq]
+
 end GDTReadingPoint
