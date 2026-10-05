@@ -587,4 +587,40 @@ theorem residuePoint_mod_R_injective
 
   exact htmod.eq_of_lt_of_lt ht₁ ht₂
 
+/--
+The residues modulo `R` reached by the affine parametrization
+`t ↦ residuePoint P t`, with `t` ranging over `0, ..., R-1`.
+-/
+def residueImage (P : Params) : Finset Nat :=
+  (Finset.range (Params.R P)).image
+    (fun t => residuePoint P t % Params.R P)
+
+/--
+The affine residue map hits `R` distinct residues.
+-/
+theorem card_residueImage
+    (P : Params) :
+    (residueImage P).card = Params.R P := by
+  unfold residueImage
+
+  have hinj :
+      Set.InjOn
+        (fun t => residuePoint P t % Params.R P)
+        (↑(Finset.range (Params.R P)) : Set Nat) := by
+    intro t₁ ht₁ t₂ ht₂ h
+    have ht₁' : t₁ < Params.R P := by
+      exact Finset.mem_range.mp ht₁
+    have ht₂' : t₂ < Params.R P := by
+      exact Finset.mem_range.mp ht₂
+    exact residuePoint_mod_R_injective P ht₁' ht₂' h
+
+  calc
+    ((Finset.range (Params.R P)).image
+        (fun t => residuePoint P t % Params.R P)).card
+        =
+      (Finset.range (Params.R P)).card := by
+        exact Finset.card_image_of_injOn hinj
+    _ = Params.R P := by
+          simp
+
 end GDTReadingPoint
