@@ -546,4 +546,45 @@ theorem good_residuePoint_iff_coprime_R
     · exact residuePoint_mod_m P t
     · exact hcop_N
 
+/--
+On the range `t < R`, reduction of `residuePoint P t` modulo `R`
+is injective.
+-/
+theorem residuePoint_mod_R_injective
+    (P : Params)
+    {t₁ t₂ : Nat}
+    (ht₁ : t₁ < Params.R P)
+    (ht₂ : t₂ < Params.R P)
+    (h :
+      residuePoint P t₁ % Params.R P =
+      residuePoint P t₂ % Params.R P) :
+    t₁ = t₂ := by
+
+  have hmod :
+      Nat.ModEq (Params.R P)
+        (residuePoint P t₁)
+        (residuePoint P t₂) := by
+    exact h
+
+  unfold residuePoint at hmod
+
+  have hmul :
+      Nat.ModEq (Params.R P)
+        (P.m * t₁)
+        (P.m * t₂) := by
+    exact
+      Nat.ModEq.add_left_cancel'
+        (P.a % P.m)
+        hmod
+
+  have hcop :
+      Nat.gcd (Params.R P) P.m = 1 := by
+    exact (Params.coprime_m_R P).symm.gcd_eq_one
+
+  have htmod :
+      Nat.ModEq (Params.R P) t₁ t₂ :=
+    Nat.ModEq.cancel_left_of_coprime hcop hmul
+
+  exact htmod.eq_of_lt_of_lt ht₁ ht₂
+
 end GDTReadingPoint
