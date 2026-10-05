@@ -685,4 +685,130 @@ theorem coprime_mod_R_iff
   rw [Nat.coprime_iff_gcd_eq_one]
   rw [hmod.gcd_eq]
 
+/--
+The GDT-good points in the initial period correspond bijectively
+to the residues in `residueImage` that are coprime to `R`.
+-/
+theorem goodCount_zero_eq_card_coprime_residueImage
+    (P : Params)
+    (hadm : Admissible P.a (Params.d P)) :
+    goodCount P 0 =
+      ((residueImage P).filter
+        (fun r => Nat.Coprime r (Params.R P))).card := by
+  unfold goodCount
+
+  have hforward :
+      ∀ n ∈ (Window P 0).filter (Good P),
+        n % Params.R P ∈
+          (residueImage P).filter
+            (fun r => Nat.Coprime r (Params.R P)) := by
+    intro n hn
+    rw [Finset.mem_filter] at hn ⊢
+    rcases hn with ⟨hnWindow, hnGood⟩
+
+    have hnlt : n < Params.Tmin P := by
+      have hbounds :=
+        (mem_Window_iff P 0 n).1 hnWindow
+      omega
+
+    rcases
+        exists_residuePoint_lt_R P hnlt hnGood.1
+      with ⟨t, ht, hnt⟩
+
+    constructor
+
+    · unfold residueImage
+      apply Finset.mem_image.mpr
+      refine ⟨t, Finset.mem_range.mpr ht, ?_⟩
+      rw [← hnt]
+
+    · subst n
+      apply (coprime_mod_R_iff P (residuePoint P t)).2
+      exact
+        (good_residuePoint_iff_coprime_R P hadm t).1
+          hnGood
+
+  have hinjective :
+      ∀ a ∈ (Window P 0).filter (Good P),
+        ∀ b ∈ (Window P 0).filter (Good P),
+          a % Params.R P = b % Params.R P →
+            a = b := by
+    intro a ha b hb hab
+
+    have ha' := Finset.mem_filter.mp ha
+    have hb' := Finset.mem_filter.mp hb
+
+    have halt : a < Params.Tmin P := by
+      have hbounds :=
+        (mem_Window_iff P 0 a).1 ha'.1
+      omega
+
+    have hblt : b < Params.Tmin P := by
+      have hbounds :=
+        (mem_Window_iff P 0 b).1 hb'.1
+      omega
+
+    rcases
+        exists_residuePoint_lt_R P halt ha'.2.1
+      with ⟨t₁, ht₁, haeq⟩
+
+    rcases
+        exists_residuePoint_lt_R P hblt hb'.2.1
+      with ⟨t₂, ht₂, hbeq⟩
+
+    rw [haeq, hbeq] at hab
+
+    have ht :
+        t₁ = t₂ :=
+      residuePoint_mod_R_injective P ht₁ ht₂ hab
+
+    rw [haeq, hbeq, ht]
+
+  have hsurjective :
+      ∀ r ∈
+          (residueImage P).filter
+            (fun x => Nat.Coprime x (Params.R P)),
+        ∃ n,
+          ∃ hn : n ∈ (Window P 0).filter (Good P),
+            n % Params.R P = r := by
+    intro r hr
+
+    rw [Finset.mem_filter] at hr
+    rcases hr with ⟨hrImage, hrCop⟩
+
+    unfold residueImage at hrImage
+    rw [Finset.mem_image] at hrImage
+    rcases hrImage with ⟨t, ht, htr⟩
+
+    have htR :
+        t < Params.R P :=
+      Finset.mem_range.mp ht
+
+    refine ⟨residuePoint P t, ?_, htr⟩
+
+    rw [Finset.mem_filter]
+    constructor
+
+    · apply (mem_Window_iff P 0 (residuePoint P t)).2
+      constructor
+      · exact Nat.zero_le _
+      · exact residuePoint_lt_Tmin P htR
+
+    · apply
+        (good_residuePoint_iff_coprime_R P hadm t).2
+
+      apply
+        (coprime_mod_R_iff P (residuePoint P t)).1
+
+      simpa [htr] using hrCop
+
+  apply Finset.card_bij
+    (fun n _ => n % Params.R P)
+
+  · exact hforward
+
+  · exact hinjective
+
+  · exact hsurjective
+
 end GDTReadingPoint
