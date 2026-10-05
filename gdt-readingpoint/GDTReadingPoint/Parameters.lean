@@ -202,5 +202,50 @@ theorem coprime_q_Rrest
     (Nat.coprime_primes hqprime hpprime).2
       (Ne.symm hpne)
 
+theorem coprime_d_R
+    (P : GDTReadingPoint.Params) :
+    Nat.Coprime (d P) (R P) := by
+  unfold d R Rset
+  rw [Nat.coprime_prod_left_iff]
+  intro q hq
+
+  have hqN :
+      q ∈ Nat.primeFactors P.N :=
+    (Finset.mem_inter.mp hq).1
+
+  have hqM :
+      q ∈ Nat.primeFactors P.m :=
+    (Finset.mem_inter.mp hq).2
+
+  have hqprime :
+      Nat.Prime q :=
+    Nat.prime_of_mem_primeFactors hqN
+
+  rw [Nat.coprime_prod_right_iff]
+  intro p hp
+
+  have hpR :
+      p ∈ Nat.primeFactors P.N \ Nat.primeFactors P.m :=
+    hp
+
+  have hpprime :
+      Nat.Prime p :=
+    Nat.prime_of_mem_primeFactors
+      (Finset.mem_sdiff.mp hpR).1
+
+  have hpnotM :
+      p ∉ Nat.primeFactors P.m :=
+    (Finset.mem_sdiff.mp hpR).2
+
+  have hpne :
+      p ≠ q := by
+    intro hpq
+    subst p
+    exact hpnotM hqM
+
+  exact
+    (Nat.coprime_primes hqprime hpprime).2
+      (Ne.symm hpne)
+
 end Params
 end GDTReadingPoint
