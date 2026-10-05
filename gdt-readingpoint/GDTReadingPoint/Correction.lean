@@ -36,7 +36,7 @@ theorem density_eq_correction_mul_baseline
         ) := by
   unfold density correctionFactor Params.Tmin
   rw [totient_radN_eq_mul P]
-  rw [Params.d_mul_R P]
+  rw [← Params.d_mul_R P]
   norm_num
 
 end GDTReadingPoint
