@@ -792,7 +792,7 @@ theorem goodCount_zero_eq_card_coprime_residueImage
     · apply (mem_Window_iff P 0 (residuePoint P t)).2
       constructor
       · exact Nat.zero_le _
-      · exact residuePoint_lt_Tmin P htR
+      · simpa using residuePoint_lt_Tmin P htR
 
     · apply
         (good_residuePoint_iff_coprime_R P hadm t).2
