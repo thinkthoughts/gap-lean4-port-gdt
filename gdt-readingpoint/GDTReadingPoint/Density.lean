@@ -29,13 +29,7 @@ theorem density_eq_totient_div_mR
       (Nat.totient (Params.R P) : ℚ) /
         ((P.m : ℚ) * (Params.R P : ℚ)) := by
   unfold density Params.Tmin
-
-  have hcast :
-      ((P.m * Params.R P : Nat) : ℚ) =
-        (P.m : ℚ) * (Params.R P : ℚ) := by
-    norm_cast
-
-  rw [hcast]
+  push_cast
 
 /--
 For every admissible class and every period-length window,
