@@ -72,17 +72,33 @@ theorem density_eq_correction_mul_baseline
     Nat.ne_of_gt hphidpos
 
   have hm0 : (P.m : ℚ) ≠ 0 := by
-    exact Nat.cast_ne_zero.mpr hmNat0
+    intro h
+    have h' : P.m = 0 := by
+      exact_mod_cast h
+    exact hmNat0 h'
+
+  have hR0 : (Params.R P : ℚ) ≠ 0 := by
+    intro h
+    have h' : Params.R P = 0 := by
+      exact_mod_cast h
+    exact hRNat0 h'
+
+  have hd0 : (Params.d P : ℚ) ≠ 0 := by
+    intro h
+    have h' : Params.d P = 0 := by
+      exact_mod_cast h
+    exact hdNat0 h'
+
+  have hphid0 :
+      (Nat.totient (Params.d P) : ℚ) ≠ 0 := by
+    intro h
+    have h' : Nat.totient (Params.d P) = 0 := by
+      exact_mod_cast h
+    exact hphidNat0 h'
 
   norm_num only [Nat.cast_mul]
 
-  field_simp [
-    hmNat0,
-    hRNat0,
-    hdNat0,
-    hphidNat0
-  ]
-
-  exact (div_self hm0).symm
+  field_simp [hm0, hR0, hd0, hphid0]
+  ring
 
 end GDTReadingPoint
