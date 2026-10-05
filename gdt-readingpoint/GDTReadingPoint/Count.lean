@@ -634,7 +634,17 @@ theorem residueImage_eq_range
   · intro x hx
     rw [residueImage, Finset.mem_image] at hx
     rcases hx with ⟨t, ht, rfl⟩
-    simp
+
+    have hRpos : 0 < Params.R P := by
+      unfold Params.R
+      apply Finset.prod_pos
+      intro q hq
+      exact
+        (Nat.prime_of_mem_primeFactors
+          (Finset.mem_sdiff.mp hq).1).pos
+
+    exact Finset.mem_range.mpr
+      (Nat.mod_lt (residuePoint P t) hRpos)
 
   · rw [card_residueImage]
     simp
