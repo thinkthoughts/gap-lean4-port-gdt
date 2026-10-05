@@ -71,19 +71,13 @@ theorem density_eq_correction_mul_baseline
       Nat.totient (Params.d P) ≠ 0 :=
     Nat.ne_of_gt hphidpos
 
-  have hm0 : (P.m : ℚ) ≠ 0 := by
-    simp [hmNat0]
-
-  have hR0 : (Params.R P : ℚ) ≠ 0 := by
-    simp [hRNat0]
-
-  have hd0 : (Params.d P : ℚ) ≠ 0 := by
-    simp [hdNat0]
-
-  have hphid0 :
-      (Nat.totient (Params.d P) : ℚ) ≠ 0 := by
-    simp [hphidNat0]
-
   norm_num only [Nat.cast_mul]
-  field_simp [hm0, hR0, hd0, hphid0]
+
+  field_simp [
+    hmNat0,
+    hRNat0,
+    hdNat0,
+    hphidNat0
+  ]
+
 end GDTReadingPoint
