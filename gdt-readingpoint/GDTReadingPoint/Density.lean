@@ -28,7 +28,8 @@ theorem density_eq_totient_div_mR
     density P =
       (Nat.totient (Params.R P) : ℚ) /
         ((P.m : ℚ) * (Params.R P : ℚ)) := by
-  simp [density, Params.Tmin, Nat.cast_mul]
+  unfold density Params.Tmin
+  rw [Nat.cast_mul]
 
 /--
 For every admissible class and every period-length window,
