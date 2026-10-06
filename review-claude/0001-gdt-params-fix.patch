@@ -1,0 +1,97 @@
+diff --git a/.github/workflows/lean_build.yml b/.github/workflows/lean_build.yml
+index 397dd3b..e3a22e8 100644
+--- a/.github/workflows/lean_build.yml
++++ b/.github/workflows/lean_build.yml
+@@ -37,6 +37,10 @@ jobs:
+         run: |
+           lake build RequestProject
+ 
++      - name: "Build GDTReadingPoint"
++        run: |
++          lake build GDTReadingPoint
++
+       - name: "Axiomatic Purity Audit (Rung 3: 0 sorry, 0 admit)"
+         run: |
+           echo "=========================================================="
+diff --git a/gdt-readingpoint/GDTReadingPoint.lean b/gdt-readingpoint/GDTReadingPoint.lean
+index 5395d8d..9a03850 100644
+--- a/gdt-readingpoint/GDTReadingPoint.lean
++++ b/gdt-readingpoint/GDTReadingPoint.lean
+@@ -9,4 +9,5 @@ import GDTReadingPoint.Period
+ import GDTReadingPoint.Minimal
+ import GDTReadingPoint.Count
+ import GDTReadingPoint.Density
++import GDTReadingPoint.Correction
+ import GDTReadingPoint.Examples
+diff --git a/gdt-readingpoint/GDTReadingPoint/Basic.lean b/gdt-readingpoint/GDTReadingPoint/Basic.lean
+index 5ba3e7e..b1d1512 100644
+--- a/gdt-readingpoint/GDTReadingPoint/Basic.lean
++++ b/gdt-readingpoint/GDTReadingPoint/Basic.lean
+@@ -5,21 +5,18 @@ Input parameters for the General Divisor Theorem reading point.
+ 
+ The positivity hypotheses follow the mathematical specification:
+ `N > 0` and `m > 0`.
++
++The fields are written `Nat` (not `ℕ`): this file imports nothing, so the
++Mathlib notation `ℕ` is unavailable here, and with `autoImplicit` it would be
++silently auto-bound as a type variable, making `Params` uninhabited.
+ -/
+ structure Params where
+-  N : ℕ
+-  m : ℕ
+-  a : ℕ
++  N : Nat
++  m : Nat
++  a : Nat
+   hN : 0 < N
+   hm : 0 < m
+ 
+--- Planned GDT quantities:
+---
+--- d     = rad(gcd(m,N))
+--- R     = rad(N) / d
+--- Tmin  = m * R
+---
+--- We add these only after confirming the exact radical API
+--- available in the host Mathlib version.
++-- The GDT quantities `d`, `R`, `Tmin` are defined in `Parameters.lean`.
+ 
+ end GDTReadingPoint
+diff --git a/gdt-readingpoint/GDTReadingPoint/Examples.lean b/gdt-readingpoint/GDTReadingPoint/Examples.lean
+index 18f3934..4110612 100644
+--- a/gdt-readingpoint/GDTReadingPoint/Examples.lean
++++ b/gdt-readingpoint/GDTReadingPoint/Examples.lean
+@@ -2,16 +2,22 @@ import GDTReadingPoint.Admissible
+ 
+ namespace GDTReadingPoint
+ 
++/--
++Regression guard: `Params` must be inhabited. If a field type is ever
++auto-bound (e.g. `ℕ` without its notation in scope), this stops compiling.
++-/
++example : Params := ⟨18, 2, 1, by decide, by decide⟩
++
+ /--
+ A minimal arithmetic reading point: residue `1` is admissible modulo `30`.
+ -/
+ example : Admissible 1 30 := by
+-  decide
++  unfold Admissible; decide
+ 
+ /--
+ A non-admissible arithmetic reading point: residue `3` is not coprime to `30`.
+ -/
+ example : NonAdmissible 3 30 := by
+-  decide
++  unfold NonAdmissible Admissible; decide
+ 
+ end GDTReadingPoint
+diff --git a/lakefile.toml b/lakefile.toml
+index 63bb878..81cad1f 100644
+--- a/lakefile.toml
++++ b/lakefile.toml
+@@ -14,3 +14,4 @@ globs = ["RequestProject.+"]
+ name = "GDTReadingPoint"
+ srcDir = "gdt-readingpoint"
+ globs = ["GDTReadingPoint", "GDTReadingPoint.+"]
++leanOptions = { autoImplicit = false }
