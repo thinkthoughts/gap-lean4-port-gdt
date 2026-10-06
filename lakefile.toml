@@ -14,3 +14,4 @@ globs = ["RequestProject.+"]
 name = "GDTReadingPoint"
 srcDir = "gdt-readingpoint"
 globs = ["GDTReadingPoint", "GDTReadingPoint.+"]
+leanOptions = { autoImplicit = false }

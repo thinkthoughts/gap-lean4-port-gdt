@@ -37,6 +37,10 @@ jobs:
         run: |
           lake build RequestProject
 
+      - name: "Build GDTReadingPoint"
+        run: |
+          lake build GDTReadingPoint
+
       - name: "Axiomatic Purity Audit (Rung 3: 0 sorry, 0 admit)"
         run: |
           echo "=========================================================="
