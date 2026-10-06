@@ -9,5 +9,6 @@ import GDTReadingPoint.Period
 import GDTReadingPoint.Minimal
 import GDTReadingPoint.Count
 import GDTReadingPoint.Density
+import GDTReadingPoint.Conformance
 import GDTReadingPoint.Correction
 import GDTReadingPoint.Examples
