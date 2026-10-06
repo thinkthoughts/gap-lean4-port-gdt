@@ -11,4 +11,5 @@ import GDTReadingPoint.Count
 import GDTReadingPoint.Density
 import GDTReadingPoint.Conformance
 import GDTReadingPoint.Correction
+import GDTReadingPoint.CorrectionTheorem
 import GDTReadingPoint.Examples
